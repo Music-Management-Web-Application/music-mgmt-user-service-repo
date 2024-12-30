@@ -5,7 +5,7 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Copy the jar file into the container
-COPY build/libs/user-service-0.0.1-SNAPSHOT.jar user-service.jar
+COPY build/libs/user-service-0.0.2-SNAPSHOT.jar user-service.jar
 
 # Expose the application's port
 EXPOSE 8081
