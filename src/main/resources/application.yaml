@@ -4,15 +4,17 @@ server:
 spring:
   application:
     name: user-service
-#  config:
-#    import: optional:configserver:http://localhost:8888
-#  cloud:
-#    config:
-#      uri: http://localhost:8888
+  config:
+    import: optional:configserver:http://localhost:8888
+  cloud:
+    config:
+      uri: http://localhost:8888
   datasource:
-    url: jdbc:mysql://mysqldb:3307/userdb?useSSL=false&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://mysqldb/userdb?useSSL=false&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true
     username: root
     password: root
+    platform: mysql
+    initialization-mode: always
   jpa:
     properties:
       hibernate:
