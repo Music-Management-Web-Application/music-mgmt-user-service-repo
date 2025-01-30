@@ -38,10 +38,10 @@ public class UserController extends CollectionController<User, UUID> {
     @PutMapping("/record")
     public Response<User> update(@RequestParam String id, @RequestBody @Valid Request<User> request) {
         Response<User> response = new Response<>();
-        User updatedRecord = request.getRecord();
-        updatedRecord.setId(UUID.fromString(id));
-        updatedRecord.setPassword(passwordEncoder.encode(updatedRecord.getPassword()));
-        repository.save(updatedRecord);
+        User record = request.getRecord();
+        record.setId(UUID.fromString(id));
+        record.setPassword(passwordEncoder.encode(record.getPassword()));
+        User updatedRecord = repository.save(record);
         response.setResponse(new ResponseEntity<>(updatedRecord, HttpStatus.OK));
         return response;
     }
