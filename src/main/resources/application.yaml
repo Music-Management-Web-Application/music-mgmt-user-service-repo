@@ -23,6 +23,18 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  security:
+    oauth2:
+      client:
+        registration:
+          spotify:
+            client-id: 71cbc88fa0b147da8daf35cfd1fc1c08
+            client-secret: b28c8ffc7fef400590adbfe21a836120
+            redirect-uri: http://localhost:8080/users
+            scope: user-read-email,user-read-private,user-library-read
+            authorization-uri: https://accounts.spotify.com/authorize
+            token-uri: https://accounts.spotify.com/api/token
+            jwk-set-uri: https://api.spotify.com/v1/me
 
 eureka:
   client:

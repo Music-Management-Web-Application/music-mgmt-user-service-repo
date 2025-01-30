@@ -28,6 +28,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.cloud:spring-cloud-config-client:4.2.0'
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	implementation 'mysql:mysql-connector-java:8.0.19'
 	implementation project(':music-mgmt-collection-library')
 	testImplementation 'junit:junit:4.13.1'
