@@ -8,15 +8,17 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User implements CollectionRecord {
+public class User extends CollectionRecord {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @NotBlank(message = "Username is required")
     @Column(unique = true)
@@ -29,4 +31,7 @@ public class User implements CollectionRecord {
 
     @NotBlank(message = "Password is required")
     private String password;
+
+    @Column(unique = true)
+    private String spotifyId;
 }
