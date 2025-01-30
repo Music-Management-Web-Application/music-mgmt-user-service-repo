@@ -33,7 +33,7 @@ spring:
             client-secret: b28c8ffc7fef400590adbfe21a836120
             client-authentication-method: basic
             authorization-grant-type: authorization_code
-            redirect-uri: http://localhost:${server.port}/users/login/oauth2/code/spotify/callback
+            redirect-uri: http://google.com/callback/
             scope: user-read-email,user-read-private,user-library-read
         provider:
           spotify-provider:
