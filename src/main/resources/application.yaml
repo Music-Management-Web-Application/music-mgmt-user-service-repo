@@ -29,11 +29,11 @@ spring:
         registration:
           spotify:
             provider: spotify-provider
-            client-id: 71cbc88fa0b147da8daf35cfd1fc1c08
-            client-secret: b28c8ffc7fef400590adbfe21a836120
+            client-id: ${SPOTIFY_CLIENT_ID}
+            client-secret: ${SPOTIFY_CLIENT_SECRET}
             client-authentication-method: basic
             authorization-grant-type: authorization_code
-            redirect-uri: http://localhost:8081
+            redirect-uri: http://localhost:8080/login/oauth2/code/spotify
             scope: user-read-email,user-read-private,user-library-read
         provider:
           spotify-provider:
