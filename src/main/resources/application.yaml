@@ -5,10 +5,10 @@ spring:
   application:
     name: user-service
   config:
-    import: optional:configserver:http://localhost:8888
+    import: optional:configserver:http://config-repo:8888
   cloud:
     config:
-      uri: http://localhost:8888
+      uri: http://config-repo:8888
   datasource:
 #    url: jdbc:mysql://localhost:3306/userdb?useSSL=false&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true
     url: jdbc:mysql://mysqldb/userdb?useSSL=false&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true
