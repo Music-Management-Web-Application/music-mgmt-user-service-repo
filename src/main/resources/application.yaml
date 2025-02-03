@@ -34,13 +34,12 @@ spring:
             client-authentication-method: client_secret_basic
             redirect-uri: http://localhost:8081/login/oauth2/code/spotify
             scope: user-read-email,user-read-private,user-library-read
-            client-name: Spotify
           provider:
             spotify:
               authorization-uri: https://accounts.spotify.com/authorize
               token-uri: https://accounts.spotify.com/api/token
               user-info-uri: https://api.spotify.com/v1/me
-              user-name-attribute: user_name
+              user-name-attribute: display_name
 
 eureka:
   client:
