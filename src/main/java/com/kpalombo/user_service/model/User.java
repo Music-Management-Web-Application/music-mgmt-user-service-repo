@@ -34,4 +34,8 @@ public class User extends CollectionRecord {
 
     @Column(unique = true)
     private String spotifyId;
+
+    private String profileImageUrl;
+
+    private boolean isSpotifyUser;
 }

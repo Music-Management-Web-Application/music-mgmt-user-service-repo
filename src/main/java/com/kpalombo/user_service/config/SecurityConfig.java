@@ -30,7 +30,7 @@ public class SecurityConfig {
                                 .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2Login ->
-                        oauth2Login.defaultSuccessUrl("/users/spotify/login", true)
+                        oauth2Login.defaultSuccessUrl("/spotify/login", true)
                 )
                 .logout(logout -> logout.logoutSuccessHandler(oidcLogoutSuccessHandler(clientRegistrationRepository)));
 

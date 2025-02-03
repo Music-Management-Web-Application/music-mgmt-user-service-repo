@@ -48,31 +48,4 @@ public class UserController extends CollectionController<User, UUID> {
         response.setResponse(new ResponseEntity<>(updatedRecord, HttpStatus.OK));
         return response;
     }
-
-    @GetMapping("/spotify/login")
-    public Response<User> handleSpotifyLogin(OAuth2AuthenticationToken authentication) {
-        Response<User> response = new Response<>();
-        Map<String, Object> attributes = authentication.getPrincipal().getAttributes();
-        String spotifyId = (String) attributes.get("id");
-        String email = (String) attributes.get("email");
-        String username = (String) attributes.get("display_name");
-
-        Optional<User> existingUser = ((UserRepository)repository).findByEmail(email);
-        User user;
-        if (existingUser.isPresent()){
-            user = existingUser.get();
-            if (user.getSpotifyId() == null){
-                user.setSpotifyId(spotifyId);
-            }
-        }
-        else{
-            user = new User();
-            user.setEmail(email);
-            user.setUsername(username);
-            user.setSpotifyId(spotifyId);
-            repository.save(user);
-        }
-        response.setResponse(new ResponseEntity<>(user, HttpStatus.OK));
-        return response;
-    }
 }
