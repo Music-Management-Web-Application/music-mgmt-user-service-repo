@@ -26,7 +26,6 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/login**", "/error").permitAll()
                                 .requestMatchers("/oauth2/authorization/spotify").permitAll()
                                 .anyRequest().authenticated()
                 )
