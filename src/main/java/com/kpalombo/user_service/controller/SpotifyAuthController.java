@@ -47,7 +47,7 @@ public class SpotifyAuthController {
             record.setEmail(email);
             record.setProfileImageUrl(profileImageUrl);
             record.setSpotifyUser(true);
-            record.setPassword(passwordEncoder.encode(record.getPassword()));
+            record.setPassword(passwordEncoder.encode(user.getAttribute("password")));
             userRepository.save(record);
         }
         return attributes;
