@@ -33,7 +33,6 @@ spring:
             client-secret: ${SPOTIFY_CLIENT_SECRET}
             client-authentication-method: basic
             authorization-grant-type: authorization_code
-            redirect-uri: http://user-service:8081/users/login/oauth2/code/spotify
             scope: user-read-email,user-read-private,user-library-read
         provider:
           spotify-provider:

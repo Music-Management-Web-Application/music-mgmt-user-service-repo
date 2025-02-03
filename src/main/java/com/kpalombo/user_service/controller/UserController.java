@@ -49,7 +49,7 @@ public class UserController extends CollectionController<User, UUID> {
         return response;
     }
 
-    @GetMapping("/login/oauth2/code/spotify")
+    @GetMapping("/spotify/callback")
     public Response<User> handleSpotifyCallback(OAuth2AuthenticationToken authentication) {
         Response<User> response = new Response<>();
         Map<String, Object> attributes = authentication.getPrincipal().getAttributes();
