@@ -1,11 +1,9 @@
 package com.kpalombo.user_service.controller;
 
 import com.kpalombo.music_mgmt_collection_library.annnotation.CollectionRecordRepository;
-import com.kpalombo.music_mgmt_collection_library.interfaces.CollectionController;
 import com.kpalombo.user_service.model.User;
 import com.kpalombo.user_service.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -13,17 +11,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 @CollectionRecordRepository(path = "/spotify")
-public class SpotifyAuthController extends CollectionController<User, UUID> {
+public class SpotifyAuthController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    protected SpotifyAuthController(UserRepository userRepository) {
-        super(userRepository);
-    }
+    @Autowired
+    UserRepository userRepository;
 
     @GetMapping("/login")
     public Map<String, Object> getSpotifyLogin(OAuth2AuthenticationToken token) {
@@ -39,7 +35,7 @@ public class SpotifyAuthController extends CollectionController<User, UUID> {
                 (String) ((Map<?, ?>) ((java.util.List<?>) attributes.get("images")).get(0)).get("url") : null;
 
         // Check if the user already exists
-        Optional<User> existingUser = ((UserRepository) repository).findBySpotifyId(spotifyId);
+        Optional<User> existingUser = userRepository.findBySpotifyId(spotifyId);
         User record;
         if (existingUser.isPresent()) {
             record = existingUser.get();
@@ -52,7 +48,7 @@ public class SpotifyAuthController extends CollectionController<User, UUID> {
             record.setProfileImageUrl(profileImageUrl);
             record.setSpotifyUser(true);
             record.setPassword(passwordEncoder.encode(record.getPassword()));
-            repository.save(record);
+            userRepository.save(record);
         }
         return attributes;
     }
