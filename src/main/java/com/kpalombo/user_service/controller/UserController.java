@@ -49,8 +49,8 @@ public class UserController extends CollectionController<User, UUID> {
         return response;
     }
 
-    @GetMapping("/spotify/callback")
-    public Response<User> handleSpotifyCallback(OAuth2AuthenticationToken authentication) {
+    @GetMapping("/spotify/login")
+    public Response<User> handleSpotifyLogin(OAuth2AuthenticationToken authentication) {
         Response<User> response = new Response<>();
         Map<String, Object> attributes = authentication.getPrincipal().getAttributes();
         String spotifyId = (String) attributes.get("id");
