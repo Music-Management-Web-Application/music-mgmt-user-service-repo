@@ -33,7 +33,7 @@ spring:
             client-secret: ${SPOTIFY_CLIENT_SECRET}
             client-authentication-method: basic
             authorization-grant-type: authorization_code
-            redirect-uri: http://api-gateway:8080/users/login/oauth2/code/spotify
+            redirect-uri: http://user-service:8081/users/login/oauth2/code/spotify
             scope: user-read-email,user-read-private,user-library-read
         provider:
           spotify-provider:
@@ -46,4 +46,4 @@ eureka:
   client:
     enabled: true
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://eureka-server:8761/eureka/
