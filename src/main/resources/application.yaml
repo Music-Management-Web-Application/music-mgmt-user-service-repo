@@ -31,7 +31,7 @@ spring:
             provider: spotify-provider
             client-id: ${SPOTIFY_CLIENT_ID}
             client-secret: ${SPOTIFY_CLIENT_SECRET}
-            client-authentication-method: basic
+            client-authentication-method: client_secret_basic
             authorization-grant-type: authorization_code
             redirect-uri: http://localhost:8081/login/oauth2/code/spotify
             scope: user-read-email,user-read-private,user-library-read
