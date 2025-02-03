@@ -28,7 +28,7 @@ spring:
       client:
         registration:
           spotify:
-            provider: spotify-provider
+            provider: spotify
             client-id: 71cbc88fa0b147da8daf35cfd1fc1c08
             client-secret: b28c8ffc7fef400590adbfe21a836120
             client-authentication-method: basic
