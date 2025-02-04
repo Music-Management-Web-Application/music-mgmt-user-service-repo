@@ -25,9 +25,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http, ClientRegistrationRepository clientRegistrationRepository) throws Exception {
         http
                 .authorizeHttpRequests(authorizeRequests ->
-                        authorizeRequests
-                                .requestMatchers("/oauth2/authorization/spotify").permitAll()
-                                .anyRequest().authenticated()
+                        authorizeRequests.anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2Login ->
                         oauth2Login.defaultSuccessUrl("/spotify/login", true)
