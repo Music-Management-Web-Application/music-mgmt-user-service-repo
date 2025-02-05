@@ -15,12 +15,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @CollectionRecordRepository(path = "/users")
 public class UserController extends CollectionController<User, UUID> {
     @Autowired
     PasswordEncoder passwordEncoder;
+
     public UserController(UserRepository userRepository) {
         super(userRepository);
     }
@@ -51,14 +54,29 @@ public class UserController extends CollectionController<User, UUID> {
     @GetMapping("/spotify/login")
     public Response<User> spotifyLogin(@AuthenticationPrincipal OAuth2User principal) {
         Response<User> response = new Response<>();
-        User user = new User();
-        user.setSpotifyId(principal.getAttribute("id"));
-        user.setUsername(principal.getAttribute("display_name"));
-        user.setEmail(principal.getAttribute("email"));
-        user.setProfileImageUrl(principal.getAttribute("images[0].url"));
-        user.setSpotifyUser(true);
-        user.setPassword("spotify"); // not used but required
-        repository.save(user);
+        Map<String, Object> attributes = principal.getAttributes();
+        String spotifyId = (String) attributes.get("id");
+        String email = (String) attributes.get("email");
+        String username = (String) attributes.get("display_name");
+        String imageUrl = (String) attributes.get("images[0].url");
+
+        Optional<User> existingUser = ((UserRepository) repository).findByEmail(email);
+        User user;
+        if (existingUser.isPresent()) {
+            user = existingUser.get();
+            if (user.getSpotifyId() == null) {
+                user.setSpotifyId(spotifyId);
+            }
+        } else {
+            user = new User();
+            user.setEmail(email);
+            user.setUsername(username);
+            user.setSpotifyId(spotifyId);
+            user.setProfileImageUrl(imageUrl);
+            user.setSpotifyUser(true);
+            user.setPassword("spotify"); // not used but required
+            repository.save(user);
+        }
         response.setResponse(new ResponseEntity<>(user, HttpStatus.OK));
         return response;
     }
