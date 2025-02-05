@@ -10,12 +10,11 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 @CollectionRecordRepository(path = "/users")
@@ -46,6 +45,21 @@ public class UserController extends CollectionController<User, UUID> {
         record.setPassword(passwordEncoder.encode(record.getPassword()));
         User updatedRecord = repository.save(record);
         response.setResponse(new ResponseEntity<>(updatedRecord, HttpStatus.OK));
+        return response;
+    }
+
+    @GetMapping("/spotify/login")
+    public Response<User> spotifyLogin(@AuthenticationPrincipal OAuth2User principal) {
+        Response<User> response = new Response<>();
+        User user = new User();
+        user.setSpotifyId(principal.getAttribute("id"));
+        user.setUsername(principal.getAttribute("display_name"));
+        user.setEmail(principal.getAttribute("email"));
+        user.setProfileImageUrl(principal.getAttribute("images[0].url"));
+        user.setSpotifyUser(true);
+        user.setPassword("spotify"); // not used but required
+        repository.save(user);
+        response.setResponse(new ResponseEntity<>(user, HttpStatus.OK));
         return response;
     }
 }
