@@ -53,7 +53,7 @@ public class UserController extends CollectionController<User, UUID> {
     }
 
     @Override
-    @PutMapping("/record")
+    @PutMapping("/update")
     public Response<User> update(@RequestParam String id, @RequestBody @Valid Request<User> request) {
         Response<User> response = new Response<>();
         User record = request.getRecord();
@@ -69,34 +69,32 @@ public class UserController extends CollectionController<User, UUID> {
         Response<User> response = new Response<>();
         Map<String, Object> attributes = principal.getAttributes();
         // spotify user information
-        String spotifyId = (String) attributes.get("id");
-        String email = (String) attributes.get("email");
-        String username = (String) attributes.get("display_name");
         Optional<List<?>> images = Optional.ofNullable((List<?>) attributes.get("images"));
-        String profileImageUrl = images.map(list -> ((Map<?, ?>) list.get(0)).get("url")).map(Object::toString).orElse(null);
+        String profileImageUrl = images.map(list -> ((Map<?, ?>) list.get(0)).get("url"))
+                .map(Object::toString).orElse(null);
 
-        Optional<User> existingUser = ((UserRepository) repository).findByEmail(email);
+        Optional<User> existingUser = ((UserRepository) repository).findByEmail((String) attributes.get("email"));
         User user = existingUser.orElseGet(User::new);
         if (existingUser.isEmpty()) {
-            user.setEmail(email);
-            user.setUsername(username);
+            user.setEmail((String) attributes.get("email"));
+            user.setUsername((String) attributes.get("display_name"));
             user.setProfileImageUrl(profileImageUrl);
-            user.setSpotifyUser(true);
             user.setPassword("spotify"); // not used but required to save
         }
-        user.setSpotifyId(spotifyId);
+        user.setSpotifyUser(true);
+        user.setSpotifyId((String) attributes.get("id"));
         repository.save(user);
         response.setResponse(new ResponseEntity<>(user, HttpStatus.OK));
         return response;
     }
 
     @PutMapping("{id}/assign-role")
-    public Response<User> assignRole(@PathVariable UUID id, @RequestParam String roleName) {
+    public Response<User> assignRole(@PathVariable UUID id, @RequestParam UUID roleId) {
         Response<User> response = new Response<>();
         User user = repository.findById(id).orElse(null);
-        Role role = roleRepository.findByName(roleName).orElse(null);
+        Role role = roleRepository.findById(roleId).orElse(null);
         if (user != null && role != null) {
-            user.getRoles().add(role);
+            user.setRoleId(roleId);
             repository.save(user);
             response.setResponse(new ResponseEntity<>(user, HttpStatus.OK));
         } else {

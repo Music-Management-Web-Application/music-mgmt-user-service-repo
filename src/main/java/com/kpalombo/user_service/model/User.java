@@ -38,15 +38,12 @@ public class User extends CollectionRecord {
     @Column(unique = true)
     private String spotifyId;
 
+    @Column
     private String profileImageUrl;
 
+    @Column
     private boolean isSpotifyUser;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    private Set<Role> roles;
+    @Column
+    private UUID roleId;
 }
