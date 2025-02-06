@@ -4,7 +4,9 @@ import com.kpalombo.music_mgmt_collection_library.annnotation.CollectionRecordRe
 import com.kpalombo.music_mgmt_collection_library.interfaces.CollectionController;
 import com.kpalombo.music_mgmt_collection_library.interfaces.Request;
 import com.kpalombo.music_mgmt_collection_library.interfaces.Response;
+import com.kpalombo.user_service.model.Role;
 import com.kpalombo.user_service.model.User;
+import com.kpalombo.user_service.repository.RoleRepository;
 import com.kpalombo.user_service.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +25,10 @@ import java.util.UUID;
 @CollectionRecordRepository(path = "/users")
 public class UserController extends CollectionController<User, UUID> {
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     public UserController(UserRepository userRepository) {
         super(userRepository);
@@ -82,6 +87,21 @@ public class UserController extends CollectionController<User, UUID> {
         user.setSpotifyId(spotifyId);
         repository.save(user);
         response.setResponse(new ResponseEntity<>(user, HttpStatus.OK));
+        return response;
+    }
+
+    @PutMapping("{id}/assign-role")
+    public Response<User> assignRole(@PathVariable UUID id, @RequestParam String roleName) {
+        Response<User> response = new Response<>();
+        User user = repository.findById(id).orElse(null);
+        Role role = roleRepository.findByName(roleName).orElse(null);
+        if (user != null && role != null) {
+            user.getRoles().add(role);
+            repository.save(user);
+            response.setResponse(new ResponseEntity<>(user, HttpStatus.OK));
+        } else {
+            response.setResponse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        }
         return response;
     }
 }
