@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -33,9 +34,16 @@ public class UserController extends CollectionController<User, UUID> {
     public Response<User> create(@RequestBody @Valid Request<User> request) {
         Response<User> response = new Response<>();
         User record = request.getRecord();
-        record.setPassword(passwordEncoder.encode(record.getPassword()));
-        User createdRecord = repository.save(record);
-        response.setResponse(new ResponseEntity<>(createdRecord, HttpStatus.CREATED));
+        Optional<User> existingUser = ((UserRepository) repository).findByEmail(record.getEmail());
+        User user;
+        if (existingUser.isPresent()) {
+            user = existingUser.get();
+        } else {
+            user = record;
+            user.setPassword(passwordEncoder.encode(record.getPassword()));
+            repository.save(user);
+        }
+        response.setResponse(new ResponseEntity<>(user, HttpStatus.CREATED));
         return response;
     }
 
@@ -55,28 +63,24 @@ public class UserController extends CollectionController<User, UUID> {
     public Response<User> spotifyLogin(@AuthenticationPrincipal OAuth2User principal) {
         Response<User> response = new Response<>();
         Map<String, Object> attributes = principal.getAttributes();
+        // spotify user information
         String spotifyId = (String) attributes.get("id");
         String email = (String) attributes.get("email");
         String username = (String) attributes.get("display_name");
-        String imageUrl = (String) attributes.get("images[0].url");
+        Optional<List<?>> images = Optional.ofNullable((List<?>) attributes.get("images"));
+        String profileImageUrl = images.map(list -> ((Map<?, ?>) list.get(0)).get("url")).map(Object::toString).orElse(null);
 
         Optional<User> existingUser = ((UserRepository) repository).findByEmail(email);
-        User user;
-        if (existingUser.isPresent()) {
-            user = existingUser.get();
-            if (user.getSpotifyId() == null) {
-                user.setSpotifyId(spotifyId);
-            }
-        } else {
-            user = new User();
+        User user = existingUser.orElseGet(User::new);
+        if (existingUser.isEmpty()) {
             user.setEmail(email);
             user.setUsername(username);
-            user.setSpotifyId(spotifyId);
-            user.setProfileImageUrl(imageUrl);
+            user.setProfileImageUrl(profileImageUrl);
             user.setSpotifyUser(true);
-            user.setPassword("spotify"); // not used but required
-            repository.save(user);
+            user.setPassword("spotify"); // not used but required to save
         }
+        user.setSpotifyId(spotifyId);
+        repository.save(user);
         response.setResponse(new ResponseEntity<>(user, HttpStatus.OK));
         return response;
     }
