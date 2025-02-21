@@ -38,15 +38,19 @@ public class UserController extends CollectionController<User, UUID> {
     @PostMapping("/create")
     public Response<User> create(@RequestBody @Valid Request<User> request) {
         Response<User> response = new Response<>();
-        User record = request.getRecord();
-        Optional<User> existingUser = ((UserRepository) repository).findByEmail(record.getEmail());
-
-        if (existingUser.isPresent()) {
-            response.setResponse(new ResponseEntity<>(existingUser.get(), HttpStatus.CONFLICT));
+        Optional<User> requestRecord = Optional.ofNullable(request.getRecord());
+        if (requestRecord.isPresent()) {
+            User record = requestRecord.get();
+            Optional<User> existingUser = ((UserRepository) repository).findByEmail(record.getEmail());
+            if (existingUser.isPresent()) {
+                response.setResponse(new ResponseEntity<>(existingUser.get(), HttpStatus.CONFLICT));
+            } else {
+                record.setPassword(passwordEncoder.encode(record.getPassword()));
+                User createdRecord = repository.save(record);
+                response.setResponse(new ResponseEntity<>(createdRecord, HttpStatus.CREATED));
+            }
         } else {
-            record.setPassword(passwordEncoder.encode(record.getPassword()));
-            User createdRecord = repository.save(record);
-            response.setResponse(new ResponseEntity<>(createdRecord, HttpStatus.CREATED));
+            response.setResponse(new ResponseEntity<>(HttpStatus.BAD_REQUEST));
         }
         return response;
     }
