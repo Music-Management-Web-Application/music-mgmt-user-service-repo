@@ -68,7 +68,7 @@ public class UserController extends CollectionController<User, UUID> {
         return response;
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public Response<User> login(@RequestBody @Valid Request<User> request) {
         Response<User> response = new Response<>();
         User record = request.getRecord();
