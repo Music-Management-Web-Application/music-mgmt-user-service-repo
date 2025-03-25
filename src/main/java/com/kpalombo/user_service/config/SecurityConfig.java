@@ -26,7 +26,7 @@ public class SecurityConfig {
                                 .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth2Login ->
-                        oauth2Login.loginPage("/oauth2/authorization/spotify").defaultSuccessUrl("/users/spotify/login", false)
+                        oauth2Login.loginPage("/oauth2/authorization/spotify").defaultSuccessUrl("http://localhost:3000/oauth2/callback", false)
                 );
 
         return http.build();
